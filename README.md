@@ -94,7 +94,10 @@ I validated the system using an Intel RealSense D435 setup in sub-1 lux environm
 *   **Reliability:** Successfully maintained a **0.99 stability ratio** across sustained motion and lighting transitions.
 
 ### 🎥 Enhancement Demo
-<video src="Output/Outdoor_env.webm" width="100%" controls></video>
+
+https://github.com/gautham-ramkumar/DarkSight/assets/62804368/22f16b77-8d00-474c-9f89-8d00a8929e71
+
+> **Note:** If the video above does not load, you can view it directly here: [Output/Outdoor_env.webm](./Output/Outdoor_env.webm)
 
 ---
 

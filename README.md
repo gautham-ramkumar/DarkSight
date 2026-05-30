@@ -95,9 +95,11 @@ I validated the system using an Intel RealSense D435 setup in sub-1 lux environm
 
 ### 🎥 Enhancement Demo
 
-https://github.com/gautham-ramkumar/DarkSight/assets/62804368/22f16b77-8d00-474c-9f89-8d00a8929e71
-
-> **Note:** If the video above does not load, you can view it directly here: [Output/Outdoor_env.webm](./Output/Outdoor_env.webm)
+<div align="center">
+  <video src="https://github.com/gautham-ramkumar/DarkSight/raw/main/Output/Outdoor_env.webm" width="100%" controls>
+    Your browser does not support the video tag. You can <a href="https://github.com/gautham-ramkumar/DarkSight/raw/main/Output/Outdoor_env.webm">download the video here</a>.
+  </video>
+</div>
 
 ---
 

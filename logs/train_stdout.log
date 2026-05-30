@@ -1,0 +1,30 @@
+Training on: cuda
+GPU: NVIDIA GeForce RTX 4070 Laptop GPU
+
+Model parameters: 18,934
+
+Loading datasets ...
+Building DarkVideo video training dataset (D=2) …
+  Video train : 17,975 pairs | 4493 batches/epoch
+
+Building image training datasets (D=1, paired) …
+  [LOLv1/train]  485 pairs → D=1 clips
+  [LOLv2/train]  689 pairs → D=1 clips
+  Image train : 1,174 total | 293 batches/epoch
+
+Building validation datasets (D=1) …
+  [LOLv1/val]  15 images → D=1 clips
+  [LOLv2/val]  100 images → D=1 clips
+  Val total   : 115 clips | 29 batches/epoch
+
+Logging to: /home/gautham/Desktop/Advanced Perception/Project1/logs/training_log.csv  (overwritten fresh this run)
+
+============================================================
+Starting Zero-3DCE training: 100 epochs
+Video batches/epoch : 4493
+Image batches/epoch : 293
+Val   batches/epoch : 29
+============================================================
+
+Epoch 001/100  LR: 1.00e-04
+--------------------------------------------------

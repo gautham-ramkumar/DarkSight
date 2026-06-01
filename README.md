@@ -159,7 +159,7 @@ python3 src/deploy/realsense_demo.py --detect
 
 I validated the system using an Intel RealSense D435 setup in sub-1 lux environments. Telemetry from `logs/demo_telemetry/` shows the following real-world performance:
 
-*   * **Enhancement Core:** ~13.9 ms inference latency using TensorRT FP16.
+*   **Enhancement Core:** ~13.9 ms inference latency using TensorRT FP16.
 *   **Live Pipeline:** ~21 FPS end-to-end throughput including camera acquisition, enhancement, detection, and visualization.
 *   **Perception Impact:** Stable YOLOv8 detections on enhanced streams where raw low-light inputs frequently produced unreliable or missing detections.
 *   **Temporal Stability:** Maintained a 0.99 ORB feature stability ratio across motion and illumination changes.

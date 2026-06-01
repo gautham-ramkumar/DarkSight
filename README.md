@@ -11,10 +11,60 @@
 ## 🌓 Why DarkSight?
 
 Traditional low-light enhancement often focuses on aesthetic quality for human viewers. In this project, **I prioritize machine perception**:
-*   **Temporal Stability:** I eliminate flickering in video streams using ConvGRU memory and motion-aware RAFT losses.
-*   **Perception-Aware:** I specifically tuned my model to improve the accuracy of downstream detectors like YOLOv8.
-*   **Real-Time Performance:** I achieve 60+ FPS on 720p streams using TensorRT and optimized 3D convolutions.
-*   **Zero-Reference:** I trained my system to enhance without needing "perfect" ground-truth labels, making it adaptable to diverse real-world sensors.
+
+* **Temporal Stability:** ConvGRU memory and motion-aware objectives reduce flickering and maintain feature consistency across video streams.
+* **Perception-Aware:** DarkSight is designed to improve downstream perception systems such as YOLOv8 rather than optimize solely for visual quality metrics.
+* **Efficient Deployment:** A lightweight recurrent architecture (~76k parameters) enables real-time operation on commodity GPUs.
+* **Zero-Reference Training:** The framework learns enhancement without requiring paired ground-truth low-light datasets.
+* **Robotics-Oriented Design:** Built and validated on live camera streams using Intel RealSense depth sensing and perception pipelines.
+
+---
+
+## ⚡ Real-Time Optimizations
+
+DarkSight v2.2 includes several deployment-focused optimizations that enable real-time performance:
+
+### 1. Luma-Chroma Decoupling
+
+Frames are converted from RGB to YCbCr color space.
+
+Only the luminance (Y) channel is enhanced while the original chroma channels (Cb, Cr) are preserved and recombined during post-processing.
+
+Benefits:
+
+* Lower computational cost
+* Reduced color artifacts
+* Improved deployment efficiency
+
+### 2. Adaptive Downsampling
+
+The luminance channel can optionally be processed at reduced resolution (e.g. 720p → 360p) before enhancement.
+
+Benefits:
+
+* Approximately 4× throughput improvement
+* Lower memory footprint
+* Faster deployment on edge hardware
+
+### 3. Temporal Memory (ConvGRU)
+
+DarkSight maintains a hidden state across frames using a ConvGRU bottleneck.
+
+Benefits:
+
+* Reduced temporal flicker
+* Improved feature stability
+* Learned temporal denoising
+
+### 4. Edge-Preserving Denoising
+
+A bilateral filter is applied during post-processing to suppress low-light sensor noise while preserving object boundaries.
+
+Benefits:
+
+* Reduced sparkle noise
+* Preserved edges and structure
+* Cleaner downstream detections
 
 ---
 
@@ -75,13 +125,33 @@ python3 src/deploy/realsense_demo.py --detect
 
 ## 📊 Performance Benchmark
 
-| Version | Mode | PSNR (RGB) | ORB Stability | FPS (720p) |
-|---|---|---|---|---|
-| v1 | Flat | 16.62 dB | 0.98 | 45 |
-| v2 | Batch | 17.33 dB | 0.99 | 58 |
-| **v2.1** | **Recurrent** | **17.25 dB** | **0.99** | **60+** |
+### Model Size
 
-*Metrics based on `logs/training_log.csv`. PSNR reported for full RGB; Y-channel PSNR peaks at **18.32 dB**.*
+| Configuration | Parameters |
+|---------------|------------|
+| Batch Mode | 18,934 (~19k) |
+| Recurrent Mode | 76,167 (~76k) |
+
+### Enhancement Performance
+
+| Version | Mode | PSNR (RGB) | ORB Stability |
+|----------|----------|----------|----------|
+| v1 | Flat | 16.62 dB | 0.98 |
+| v2 | Batch | 17.33 dB | 0.99 |
+| v2.1 | Recurrent | 17.25 dB | 0.99 |
+
+*Metrics based on `logs/training_log.csv`.*
+
+### Deployment Performance (RTX 4070 Laptop GPU)
+
+| Metric | Value |
+|----------|----------|
+| Enhancement Core Latency | ~13.9 ms |
+| Optimized Enhancement Throughput | 60+ FPS |
+| Live RealSense + Detection Pipeline | ~21 FPS |
+| ORB Stability Ratio | 0.99 |
+
+**Note:** The 60+ FPS figure refers to the optimized enhancement pipeline using Y-channel processing and adaptive downsampling. The live RealSense demonstration includes sensor acquisition, preprocessing, post-processing, visualization, and YOLOv8 inference, resulting in approximately 21 FPS end-to-end throughput.
 
 ---
 
@@ -89,9 +159,10 @@ python3 src/deploy/realsense_demo.py --detect
 
 I validated the system using an Intel RealSense D435 setup in sub-1 lux environments. Telemetry from `logs/demo_telemetry/` shows the following real-world performance:
 
-*   **Inference Latency:** Average of **13.9ms** for the enhancement core.
-*   **End-to-End Perception:** Achieved stable object detection (YOLOv8) on enhanced streams where the raw input showed zero detections.
-*   **Reliability:** Successfully maintained a **0.99 stability ratio** across sustained motion and lighting transitions.
+*   * **Enhancement Core:** ~13.9 ms inference latency using TensorRT FP16.
+*   **Live Pipeline:** ~21 FPS end-to-end throughput including camera acquisition, enhancement, detection, and visualization.
+*   **Perception Impact:** Stable YOLOv8 detections on enhanced streams where raw low-light inputs frequently produced unreliable or missing detections.
+*   **Temporal Stability:** Maintained a 0.99 ORB feature stability ratio across motion and illumination changes.
 
 ### 🎥 Enhancement Demo
 
@@ -107,6 +178,26 @@ I validated the system using an Intel RealSense D435 setup in sub-1 lux environm
 *   **Training & Losses:** [src/training/losses.py](./src/training/losses.py) — Perception-aware and structural preservation loss functions.
 *   **Temporal Stability (RAFT):** [src/training/raft_warp.py](./src/training/raft_warp.py) — Motion-aware optical flow warping for training-time consistency.
 *   **Robotic Deployment:** [src/deploy/realsense_demo.py](./src/deploy/realsense_demo.py) — End-to-end pipeline for D435 fusion and YOLOv8 perception.
+
+---
+
+## 🔭 Future Directions
+
+One important observation from deployment testing is that enhancement fundamentally depends on the presence of recoverable visual signal.
+
+While DarkSight performs well in challenging low-light environments, scenes approaching near-zero illumination provide insufficient RGB information for enhancement alone to recover meaningful structure.
+
+This motivates two future research directions:
+
+### Multi-Modal Perception
+
+Integrating thermal sensing alongside RGB inputs to enable perception in no-light environments.
+
+### Representation-Centric Learning
+
+Moving beyond pixel enhancement and toward learning robust scene representations directly from degraded observations.
+
+The long-term goal is not simply to make dark images brighter, but to help autonomous systems understand their environment under extreme illumination conditions.
 
 ---
 

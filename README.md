@@ -22,7 +22,7 @@ Traditional low-light enhancement often focuses on aesthetic quality for human v
 
 ## ⚡ Real-Time Optimizations
 
-DarkSight v2.2 includes several deployment-focused optimizations that enable real-time performance:
+DarkSight v2 includes several deployment-focused optimizations that enable real-time performance:
 
 ### 1. Luma-Chroma Decoupling
 
